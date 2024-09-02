@@ -77,7 +77,7 @@ app.get("/getTodos", function (req, res) {
   });
 });
 
-app.post("/deleteTodo", function (req, res) {
+app.delete("/deleteTodo", function (req, res) {
   const todoid = req.query.todoId;
   const userId = req.query.userId;
   fs.readFile("todos.json", "utf-8", function (err, data) {
@@ -125,7 +125,7 @@ app.post("/deleteTodo", function (req, res) {
   });
 });
 
-app.post("/updateTodo", function (req, res) {
+app.put("/updateTodo", function (req, res) {
   fs.readFile("todos.json", "utf-8", function (err, data) {
     if (err) {
       console.log(err);
