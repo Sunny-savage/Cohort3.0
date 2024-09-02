@@ -1,0 +1,74 @@
+<body>
+  <input type="text"></input>
+  <button onclick="addTodo()">Add todo!</button>
+  <button onclick="deleteLastTodo()">Delete last todo</button>
+
+  <button onclick="deleteFirstTodo()">Delete first todo</button>
+  <div id="todos"></div>
+  <script>
+    let todos = [];
+    let currentId = 1;
+    function addTodo() {
+      const inputElement = document.querySelector("input");
+      const title = inputElement.value.trim(); // Get input value and trim any extra whitespace
+
+      if (title !== "") { // Only add non-empty todos
+        todos.push({
+          title: title,
+          id: currentId,
+        });
+
+        currentId++;
+        inputElement.value = ""; // Clear the input after adding a todo
+        render(); // Call render to display the updated list
+      }
+    }
+
+    function deleteFirstTodo() {
+      todos.splice(0, 1);
+      render();
+    }
+
+    function deleteLastTodo() {
+      todos.splice(todos.length - 1, 1);
+      render();
+    }
+
+    function deleteTodo(id) {
+
+      todos = todos.filter((todo) => todo.id !== id);
+      render();
+    }
+
+
+    function createcomponent(todo) {
+
+      console.log(todo.id)
+      const divs = document.createElement("div");
+      const head = document.createElement("h4");
+      const title = todo.title;
+      const press = document.createElement("button");
+      console.log(title)
+      head.innerText = todo.id + "." +  title;
+      press.innerText = "Delete";
+      press.onclick = () => deleteTodo(todo.id);
+      divs.appendChild(head);
+      divs.appendChild(press);
+
+      return divs;
+    }
+
+    function render() {
+      const body = document.querySelector("#todos");
+      body.innerHTML = "";
+
+      for (let i = 0; i < todos.length; i++) {
+
+        const ans = createcomponent(todos[i])
+
+        document.querySelector("#todos").appendChild(ans);
+      }
+
+    }
+  </script>
+</body>
