@@ -101,15 +101,14 @@ adminRouter.post("/course", adminMiddleware, async function (req, res) {
 adminRouter.put("/course", adminMiddleware, async function (req, res) {
   try {
     const adminId = req.userId;
-    const { title, description, price, imageUrl } = req.body;
+    const { title, description, price, imageUrl, courseId } = req.body;
 
-    const course = await courseModel.findOneAndUpdate(
-      { creatorId: adminId },
-      { title, description, price, imageUrl },
-      { new: true }
+    const course = await courseModel.updateOne(
+      { creatorId: adminId, _id: courseId },
+      { title, description, price, imageUrl }
     );
 
-    if (!course) {
+    if (!course.matchedCount) {
       return res.status(404).json({ msg: "Course not found" });
     }
 

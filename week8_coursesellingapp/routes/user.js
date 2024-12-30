@@ -1,8 +1,9 @@
 const { Router } = require("express");
-const { userModel } = require("../db");
+const { userModel, purchaseModel } = require("../db");
 const bcrypt = require("bcrypt");
 const { z } = require("zod");
 const jwt = require("jsonwebtoken");
+const { userMiddleware } = require("../middlewares/user");
 
 const userSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -76,8 +77,19 @@ userRouter.post("/signin", async function (req, res) {
   }
 });
 
-userRouter.get("/purchases", function (req, res) {
-  res.json({});
+userRouter.get("/purchases", userMiddleware, async function (req, res) {
+  try {
+    const userId = req.userId;
+    const courses = await purchaseModel.find({ userId: userId }).populate("courseId").populate("userId");
+    if (courses.length == 0) {
+      return res
+        .status(200)
+        .json({ message: "courses not found", courses: courses });
+    }
+    res.status(404).json({ message: "here are the courses", courses: courses });
+  } catch (error) {
+    res.status(500).json({ message: "internal serer error" });
+  }
 });
 
 module.exports = {
